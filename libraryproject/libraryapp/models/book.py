@@ -1,15 +1,18 @@
 from django.db import models
+from .library import Library
+from .librarian import Librarian
 from django.urls import reverse
 
 class Book (models.Model):
 
     # These properties look like our columns for Book table
-    name = models.CharField(max_length=50)
+    title = models.CharField(max_length=50)
+    isbn = models.CharField(max_length=50)
     author = models.CharField(max_length=50)
+    year_published = models.IntegerField(max_length=10)
     publisher = models.CharField(max_length=50)
-    yearPublished = models.CharField(max_length=50)
-    libraryId = models.CharField(max_length=10)
-    librarianId = models.CharField(max_length=10)
+    librarian = models.ForeignKey(Librarian, on_delete=models.CASCADE)
+    location = models.ForeignKey(Library, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = ("book")
