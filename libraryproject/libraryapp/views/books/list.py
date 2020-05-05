@@ -1,5 +1,5 @@
 import sqlite3
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from libraryapp.models import Book
 from libraryapp.models import model_factory
@@ -33,3 +33,25 @@ def book_list(request):
         }
 
         return render(request, template, context)
+    
+    elif request.method == 'POST':
+        form_data = request.POST
+
+        with sqlite3.connect(Connection.db_path) as conn:
+            db_cursor = conn.cursor()
+
+            # wondering if this will post anything as I'm not giving
+            # a value for 'publisher' col.
+            db_cursor.execute("""
+            INSERT INTO libraryapp_book
+            (
+                title, isbn, author,
+                year_published, librarian_id, location_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (form_data['title'], form_data['isbn'], form_data['author'],
+            form_data['year_published'], form_data['librarian_id'], 
+            form_data['location_id']))
+
+        return redirect(reverse('libraryapp:books'))
