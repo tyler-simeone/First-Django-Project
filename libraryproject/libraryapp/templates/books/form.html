@@ -28,10 +28,14 @@
           <input id="isbn" type="text" name="isbn">
       </fieldset>
       <fieldset>
+          <label for="publisher">Publisher: </label>
+          <input id="publisher" type="text" name="publisher">
+      </fieldset>
+      <fieldset>
           <label for="location">Library: </label>
           <select id="location" type="text" name="location">
                 {% for library in all_libraries %}
-                    <option value="{{ library.id }}">{{ library.title }}</option>
+                    <option value="{{ library.id }}">{{ library.name }}</option>
                 {% endfor %}
           </select>
       </fieldset>
