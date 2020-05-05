@@ -6,6 +6,8 @@ from libraryapp.models import Library
 from libraryapp.models import model_factory
 from ..connection import Connection
 
+# only runs when 'book/form' url pattern is ran 
+# and the vals it returns go into book_form
 def get_libraries():
     with sqlite3.connect(Connection.db_path) as conn:
         conn.row_factory = model_factory(Library)

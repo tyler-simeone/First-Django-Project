@@ -40,8 +40,9 @@ def book_list(request):
         with sqlite3.connect(Connection.db_path) as conn:
             db_cursor = conn.cursor()
 
-            # wondering if this will post anything as I'm not giving
-            # a value for 'publisher' col.
+            # The values (?,?,?,?) are connecting to the form_data[]
+            # values from the form template inputs. Each string in
+            # form_data[] brackets are the 'name' attr of the inputs
             db_cursor.execute("""
             INSERT INTO libraryapp_book
             (
@@ -53,6 +54,6 @@ def book_list(request):
             """,
             (form_data['title'], form_data['isbn'], form_data['author'],
             form_data['year_published'], form_data['publisher'], request.user.librarian.id, 
-            form_data['location_id']))
+            form_data['location']))
 
         return redirect(reverse('libraryapp:books'))
