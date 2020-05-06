@@ -43,6 +43,10 @@ def book_list(request):
             # The values (?,?,?,?) are connecting to the form_data[]
             # values from the form template inputs. Each string in
             # form_data[] brackets are the 'name' attr of the inputs
+
+            # We do it this way for added security to prevent against
+            # SQL injection attacks where hackers could insert false
+            # data into the POST request.
             db_cursor.execute("""
             INSERT INTO libraryapp_book
             (
