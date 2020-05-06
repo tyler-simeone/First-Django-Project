@@ -1,6 +1,7 @@
 from .books.list import book_list
 from .books.form import book_form
 from .librarians.list import list_librarians
+from .librarians.details import librarian_details
 from .libraries.list import library_list
 from .libraries.form import library_form
 from .home import home
