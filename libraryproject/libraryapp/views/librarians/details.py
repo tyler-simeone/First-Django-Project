@@ -12,13 +12,14 @@ def get_librarian(librarian_id):
         conn.row_factory = model_factory(Librarian)
         db_cursor = conn.cursor()
 
-        # THIS MAY NOT WORK BC SELECTING FKs...
         db_cursor.execute("""
         SELECT
             l.id,
             l.location_id,
-            l.user_id
+            l.user_id,
+            u.first_name
         FROM libraryapp_librarian l
+        LEFT JOIN auth_user u ON l.user_id = u.id
         WHERE l.id = ?
         """, (librarian_id,))
 
