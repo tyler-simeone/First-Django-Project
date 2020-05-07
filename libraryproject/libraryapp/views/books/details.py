@@ -47,9 +47,38 @@ def book_details(request, book_id):
         # have a method="POST" attribute
         form_data = request.POST
         
+        # Checking if the hidden input is telling us it's an update
+        # request, then getting all input vals in the form and running
+        # a SQL update command on the book in focus.
+        if (
+            "actual_method" in form_data
+            and form_data["actual_method"] == "PUT"
+        ):
+            with sqlite3.connect(Connection.db_path) as conn:
+                db_cursor = conn.cursor()
+
+                db_cursor.execute("""
+                UPDATE libraryapp_book
+                SET title = ?,
+                    isbn = ?,
+                    author = ?,
+                    year_published = ?,
+                    publisher = ?,
+                    location_id = ?
+                WHERE id = ?
+                """, 
+                (
+                    form_data['title'], form_data['isbn'],
+                    form_data['author'], form_data['year_published'],
+                    form_data['publisher'], form_data['location'], 
+                    book_id, 
+                ))
+
+            return redirect(reverse('libraryapp:books'))
+
         # Checking to see if the POST form from the details template
         # has the hidden input specifying the DELETE request.
-        if (
+        elif (
             "actual_method" in form_data
             and form_data["actual_method"] == "DELETE"
         ):

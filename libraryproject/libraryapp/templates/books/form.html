@@ -8,6 +8,11 @@
   <body>
       <h1>Inventory Book</h1>
 
+      {% comment %} 
+        If the book obj has an id then we're editing an
+        existing book, and we will send this POST request to trigger 
+        book_details, which will take the vals and update SQL data. 
+      {% endcomment %}
       {% if book.id is not None %}
           <form action="{% url 'libraryapp:book' book.id %}" method="post">
       {% else %}
@@ -50,7 +55,7 @@
         {% else %}
             <input type="submit" value="Create" />
         {% endif %}
-        
+
     </form>
   </body>
 </html>
