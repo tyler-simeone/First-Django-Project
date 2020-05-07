@@ -3,6 +3,8 @@
 {% block content %}
     <h1>Books</h1>
 
+    <a href="{% url 'libraryapp:book_form' %}">Add Book to Inventory</a>
+
     <ol>
     {% for book in all_books %}
         <li>
