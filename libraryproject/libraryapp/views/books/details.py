@@ -10,7 +10,7 @@ from ..connection import Connection
 # is = to the book_id in the url path.
 def get_book(book_id):
     with sqlite3.connect(Connection.db_path) as conn:
-        conn.row_factory = model_factory(Book)
+        conn.row_factory = create_book
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
@@ -21,8 +21,16 @@ def get_book(book_id):
             b.author,
             b.year_published,
             b.librarian_id,
-            b.location_id
+            b.location_id,
+            li.id librarian_id,
+            u.first_name,
+            u.last_name,
+            loc.id library_id,
+            loc.title library_name
         FROM libraryapp_book b
+        JOIN libraryapp_librarian li ON b.librarian_id = li.id
+        JOIN libraryapp_library loc ON b.location_id = loc.id
+        JOIN auth_user u ON u.id = li.user_id
         WHERE b.id = ?
         """, (book_id,))
 
