@@ -48,6 +48,7 @@ def create_book(cursor, row):
     book.author = _row["author"]
     book.year_published = _row["year_published"]
 
+    # The bracket notation is how we access data from specific cols
     librarian = Librarian()
     librarian.id = _row["librarian_id"]
     librarian.first_name = _row["first_name"]

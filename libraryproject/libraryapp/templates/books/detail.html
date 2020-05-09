@@ -7,6 +7,13 @@
 
         <div>Published in {{ book.year_published }}</div>
         <div>ISBN: {{ book.isbn }}</div>
+
+        {% comment %} The 2 lines below we are getting data from book
+        table's FKs via new row factory that creates a book obj for 
+        each row and then for the FKs assigns a new obj with data
+        for each FK. {% endcomment %}
+        <div>Located in the {{ book.location.title }}</div>
+        <div>Registered by {{ book.librarian.first_name }} {{ book.librarian.last_name }}</div>
     </section>
 
     <section id="book-actions" style="display:flex;">
