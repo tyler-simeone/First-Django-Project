@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from libraryapp.models import Book, Library, Librarian
-from libraryapp.models import model_factory
+# from libraryapp.models import model_factory
 from ..connection import Connection
 
 # Getting book from db *WHERE* the id of the book 
@@ -15,7 +15,7 @@ def get_book(book_id):
 
         db_cursor.execute("""
         SELECT
-            b.id,
+            b.id book_id,
             b.title,
             b.isbn,
             b.author,
@@ -26,7 +26,7 @@ def get_book(book_id):
             u.first_name,
             u.last_name,
             loc.id library_id,
-            loc.title library_name
+            loc.name library_name
         FROM libraryapp_book b
         JOIN libraryapp_librarian li ON b.librarian_id = li.id
         JOIN libraryapp_library loc ON b.location_id = loc.id
@@ -56,7 +56,7 @@ def create_book(cursor, row):
 
     library = Library()
     library.id = _row["library_id"]
-    library.title = _row["title"]
+    library.name = _row["library_name"]
 
     book.librarian = librarian
     book.location = library
