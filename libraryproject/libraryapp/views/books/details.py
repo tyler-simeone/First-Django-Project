@@ -2,7 +2,7 @@ import sqlite3
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from libraryapp.models import Book, Library
+from libraryapp.models import Book, Library, Librarian
 from libraryapp.models import model_factory
 from ..connection import Connection
 
@@ -28,7 +28,36 @@ def get_book(book_id):
 
         return db_cursor.fetchone()
 
-# Invokes above function to get the matching book,
+# Adding a new row factory func. Looks like we're getting the book
+# details like normal, but now also getting details for the book's FKs
+def create_book(cursor, row):
+    _row = sqlite3.Row(cursor, row)
+
+    book = Book()
+    book.id = _row["book_id"]
+    book.title = _row["title"]
+    book.isbn = _row["isbn"]
+    book.author = _row["author"]
+    book.year_published = _row["year_published"]
+
+    librarian = Librarian()
+    librarian.id = _row["librarian_id"]
+    librarian.first_name = _row["first_name"]
+    librarian.last_name = _row["last_name"]
+
+    library = Library()
+    library.id = _row["library_id"]
+    library.title = _row["title"]
+
+    book.librarian = librarian
+    book.location = library
+
+    # returning a new book obj for each row/book in the DB, but now
+    # for the FKs on the book obj we have nested objs w/ data for the
+    # FKs.
+    return book
+
+# Invokes get_book function to get the matching book,
 # then renders the html template to display the book.
 @login_required
 def book_details(request, book_id):
