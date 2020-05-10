@@ -8,6 +8,7 @@ from ..connection import Connection
 def library_list(request):
     if request.method == 'GET':
         with sqlite3.connect(Connection.db_path) as conn:
+            # conn.row_factory = model_factory(Library)
             conn.row_factory = create_library
             db_cursor = conn.cursor()
 
@@ -28,16 +29,30 @@ def library_list(request):
             all_libraries = db_cursor.fetchall()
 
             library_groups = {}
+            # below gives us array of library objs representing all
+            # libraries in the DB with their respective books.
+            library_groups_values = library_groups.values()
 
+            # imagine each row being returned and the library table 
+            # being the library arg, and the book table being the 
+            # book arg. each book is already connected to a library
+            # which is why we don't need to be more specific on which
+            # book is being added to the library obj's 'books' arr.
             for (library, book) in all_libraries:
-
                 if library.id not in library_groups:
+                    # setting the key = to the new library's ID & value =
+                    # to the whole new library obj.
                     library_groups[library.id] = library
+                    # adding book to the new library's 'books' array
+                    library_groups[library.id].books.append(book)
+                
+                else:
+                    # adding book to existing library if no new lib added.
                     library_groups[library.id].books.append(book)
 
         template = 'libraries/list.html'
         context = {
-            'all_libraries': all_libraries
+            'library_groups_values': library_groups_values
         }
 
         return render(request, template, context)
@@ -77,8 +92,8 @@ def create_library(cursor, row):
     book.id = _row["book_id"]
     book.title = _row["title"]
     book.author = _row["author"]
-    book.isbn = _row["isbn"]
     book.year_published = _row["year_published"]
+    book.isbn = _row["isbn"]
 
     # Returning a tuple with the library and book objs created 
     # for each row of data returned from the execute stmt.
