@@ -27,6 +27,14 @@ def library_list(request):
 
             all_libraries = db_cursor.fetchall()
 
+            library_groups = {}
+
+            for (library, book) in all_libraries:
+
+                if library.id not in library_groups:
+                    library_groups[library.id] = library
+                    library_groups[library.id].books.append(book)
+
         template = 'libraries/list.html'
         context = {
             'all_libraries': all_libraries
@@ -60,7 +68,7 @@ def create_library(cursor, row):
     _row = sqlite3.Row(cursor, row)
 
     library = Library()
-    library.id = _row["id"]
+    library.id = _row["library_id"]
     library.name = _row["name"]
     library.address = _row["address"]
     library.books = []
