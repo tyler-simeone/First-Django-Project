@@ -1,14 +1,14 @@
 import sqlite3
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
-from libraryapp.models import Library, model_factory
+from libraryapp.models import Library, Book, model_factory
 from ..connection import Connection
 
 @login_required
 def library_list(request):
     if request.method == 'GET':
         with sqlite3.connect(Connection.db_path) as conn:
-            conn.row_factory = model_factory(Library)
+            conn.row_factory = create_library
             db_cursor = conn.cursor()
 
             db_cursor.execute("""
@@ -55,3 +55,23 @@ def library_list(request):
         # Will then redirect back to libraries url which will run 
         # the GET.
         return redirect(reverse('libraryapp:libraries'))
+
+def create_library(cursor, row):
+    _row = sqlite3.Row(cursor, row)
+
+    library = Library()
+    library.id = _row["id"]
+    library.name = _row["name"]
+    library.address = _row["address"]
+    library.books = []
+
+    book = Book()
+    book.id = _row["book_id"]
+    book.title = _row["title"]
+    book.author = _row["author"]
+    book.isbn = _row["isbn"]
+    book.year_published = _row["year_published"]
+
+    # Returning a tuple with the library and book objs created 
+    # for each row of data returned from the execute stmt.
+    return (library, book,)
