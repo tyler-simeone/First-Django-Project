@@ -3,11 +3,18 @@
 {% block content %}
     <h1>Libraries</h1>
 
+    <a href="{% url 'libraryapp:library_form' %}">Add Library</a>
+
     <ol>
-    {% for library in all_libraries %}
+    {% for library in library_groups_values %}
         <li>
-            <a href="{% url 'libraryapp:library' library.id%}"> {{ library.name }}</a>, 
-            {{ library.address }} 
+            <a href="{% url 'libraryapp:library' library.id %}"> {{ library.name }}</a> 
+            ({{ library.address }})
+            <ul>
+            {% for book in library.books %}
+                <li>{{ book.title }}</li>
+            {% endfor %}
+            </ul>
         </li>
     {% endfor %}
     </ol>
