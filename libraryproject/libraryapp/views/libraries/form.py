@@ -6,7 +6,6 @@ from libraryapp.models import Library
 from libraryapp.models import model_factory
 from ..connection import Connection
 
-# function to render the library form template 
 @login_required
 def library_form(request):
     if request.method == 'GET':
