@@ -59,15 +59,20 @@ def library_list(request):
     elif request.method == 'POST':
         form_data = request.POST
 
-        with sqlite3.connect(Connection.db_path) as conn:
-            db_cursor = conn.cursor()
+        library = Library.objects.create(
+            name = form_data['name'],
+            address = form_data['address']
+        )
 
-            db_cursor.execute("""
-            INSERT INTO libraryapp_library
-            (name, address)
-            VALUES (?, ?)
-            """,
-            (form_data['name'], form_data['address']))
+        # with sqlite3.connect(Connection.db_path) as conn:
+        #     db_cursor = conn.cursor()
+
+        #     db_cursor.execute("""
+        #     INSERT INTO libraryapp_library
+        #     (name, address)
+        #     VALUES (?, ?)
+        #     """,
+        #     (form_data['name'], form_data['address']))
 
         return redirect(reverse('libraryapp:libraries'))
 
