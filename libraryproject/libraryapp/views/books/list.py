@@ -1,7 +1,7 @@
 import sqlite3
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
-from libraryapp.models import Book
+from libraryapp.models import Book, Librarian
 from libraryapp.models import model_factory
 from ..connection import Connection
 
@@ -38,20 +38,30 @@ def book_list(request):
     elif request.method == 'POST':
         form_data = request.POST
 
-        with sqlite3.connect(Connection.db_path) as conn:
-            db_cursor = conn.cursor()
+        current_user = Librarian.objects.get(user=request.user)
+        new_book = Book.objects.create(
+            title = form_data['title'],
+            isbn = form_data['isbn'],
+            author = form_data['author'],
+            year_published = form_data['year_published'],
+            publisher = form_data['publisher'],
+            librarian_id = current_user.id,
+            location_id = form_data['location']
+        )
+        # with sqlite3.connect(Connection.db_path) as conn:
+        #     db_cursor = conn.cursor()
 
-            db_cursor.execute("""
-            INSERT INTO libraryapp_book
-            (
-                title, isbn, author,
-                year_published, publisher, 
-                librarian_id, location_id
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (form_data['title'], form_data['isbn'], form_data['author'],
-            form_data['year_published'], form_data['publisher'], request.user.librarian.id, 
-            form_data['location']))
+        #     db_cursor.execute("""
+        #     INSERT INTO libraryapp_book
+        #     (
+        #         title, isbn, author,
+        #         year_published, publisher, 
+        #         librarian_id, location_id
+        #     )
+        #     VALUES (?, ?, ?, ?, ?, ?, ?)
+        #     """,
+        #     (form_data['title'], form_data['isbn'], form_data['author'],
+        #     form_data['year_published'], form_data['publisher'], request.user.librarian.id, 
+        #     form_data['location']))
 
         return redirect(reverse('libraryapp:books'))
