@@ -87,41 +87,44 @@ def book_details(request, book_id):
         return render(request, template, context)
 
     elif request.method == 'POST':
-        # Below line contains all code nested in form tags that 
-        # have a method="POST" attribute
         form_data = request.POST
         
-        # Checking if the hidden input is telling us it's an update
-        # request, then getting all input vals in the form and running
-        # a SQL update command on the book in focus.
         if (
             "actual_method" in form_data
             and form_data["actual_method"] == "PUT"
         ):
-            with sqlite3.connect(Connection.db_path) as conn:
-                db_cursor = conn.cursor()
+            book = Book.objects.get(pk=book_id)
+            book.title = form_data['title']
+            book.isbn = form_data['isbn']
+            book.author = form_data['author']
+            book.year_published = form_data['year_published']
+            book.publisher = form_data['publisher']
+            book.location_id = form_data['location']
 
-                db_cursor.execute("""
-                UPDATE libraryapp_book
-                SET title = ?,
-                    isbn = ?,
-                    author = ?,
-                    year_published = ?,
-                    publisher = ?,
-                    location_id = ?
-                WHERE id = ?
-                """, 
-                (
-                    form_data['title'], form_data['isbn'],
-                    form_data['author'], form_data['year_published'],
-                    form_data['publisher'], form_data['location'], 
-                    book_id, 
-                ))
+            book.save()
+
+            # with sqlite3.connect(Connection.db_path) as conn:
+            #     db_cursor = conn.cursor()
+
+            #     db_cursor.execute("""
+            #     UPDATE libraryapp_book
+            #     SET title = ?,
+            #         isbn = ?,
+            #         author = ?,
+            #         year_published = ?,
+            #         publisher = ?,
+            #         location_id = ?
+            #     WHERE id = ?
+            #     """, 
+            #     (
+            #         form_data['title'], form_data['isbn'],
+            #         form_data['author'], form_data['year_published'],
+            #         form_data['publisher'], form_data['location'], 
+            #         book_id, 
+            #     ))
 
             return redirect(reverse('libraryapp:books'))
 
-        # Checking to see if the POST form from the details template
-        # has the hidden input specifying the DELETE request.
         elif (
             "actual_method" in form_data
             and form_data["actual_method"] == "DELETE"
