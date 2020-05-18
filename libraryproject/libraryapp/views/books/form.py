@@ -11,21 +11,6 @@ def get_libraries():
     
     return Library.objects.all()
 
-    # with sqlite3.connect(Connection.db_path) as conn:
-    #     conn.row_factory = model_factory(Library)
-    #     db_cursor = conn.cursor()
-
-    #     db_cursor.execute("""
-    #     select
-    #         l.id,
-    #         l.name,
-    #         l.address
-    #     from libraryapp_library l
-    #     """)
-
-    #     return db_cursor.fetchall()
-
-
 @login_required
 def book_form(request):
     if request.method == 'GET':
