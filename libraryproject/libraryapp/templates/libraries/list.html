@@ -6,7 +6,7 @@
     <a href="{% url 'libraryapp:library_form' %}">Add Library</a>
 
     <ol>
-    {% for library in library_groups_values %}
+    {% for library in all_libraries %}
         <li>
             <a href="{% url 'libraryapp:library' library.id %}"> {{ library.name }}</a> 
             ({{ library.address }})

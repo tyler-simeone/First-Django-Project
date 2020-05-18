@@ -7,40 +7,51 @@ from ..connection import Connection
 @login_required
 def library_list(request):
     if request.method == 'GET':
-        with sqlite3.connect(Connection.db_path) as conn:
-            conn.row_factory = create_library
-            db_cursor = conn.cursor()
+        all_libraries = Library.objects.all()
+        all_books = Book.objects.all()
 
-            db_cursor.execute("""
-                SELECT
-                    li.id library_id,
-                    li.name,
-                    li.address,
-                    b.id book_id,
-                    b.title,
-                    b.author,
-                    b.year_published,
-                    b.isbn
-                FROM libraryapp_library li
-                JOIN libraryapp_book b ON li.id = b.location_id
-            """)
+        for library in all_libraries:
+            library.books = []
 
-            all_libraries = db_cursor.fetchall()
+            library_books = all_books.filter(location_id=library.id)
 
-            library_groups = {}
-            library_groups_values = library_groups.values()
+            for book in library_books:
+                library.books.append(book)
 
-            for (library, book) in all_libraries:
-                if library.id not in library_groups:
-                    library_groups[library.id] = library
-                    library_groups[library.id].books.append(book)
+        # with sqlite3.connect(Connection.db_path) as conn:
+        #     conn.row_factory = create_library
+        #     db_cursor = conn.cursor()
+
+        #     db_cursor.execute("""
+        #         SELECT
+        #             li.id library_id,
+        #             li.name,
+        #             li.address,
+        #             b.id book_id,
+        #             b.title,
+        #             b.author,
+        #             b.year_published,
+        #             b.isbn
+        #         FROM libraryapp_library li
+        #         JOIN libraryapp_book b ON li.id = b.location_id
+        #     """)
+
+        #     all_libraries = db_cursor.fetchall()
+
+        #     library_groups = {}
+        #     library_groups_values = library_groups.values()
+
+        #     for (library, book) in all_libraries:
+        #         if library.id not in library_groups:
+        #             library_groups[library.id] = library
+        #             library_groups[library.id].books.append(book)
                 
-                else:
-                    library_groups[library.id].books.append(book)
+        #         else:
+        #             library_groups[library.id].books.append(book)
 
         template = 'libraries/list.html'
         context = {
-            'library_groups_values': library_groups_values
+            'all_libraries': all_libraries
         }
 
         return render(request, template, context)
