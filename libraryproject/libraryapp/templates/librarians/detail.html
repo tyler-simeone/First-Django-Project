@@ -1,6 +1,6 @@
 {% extends 'shared/base.html' %}
 
 {% block content %}
-    <h1>{{ librarian.first_name }}</h1>
-    <h2>{{ librarian.name }}</h2>
+    <h1>{{ librarian.user.first_name }}</h1>
+    <h2>{{ librarian.library.name }}</h2>
 {% endblock  %}
