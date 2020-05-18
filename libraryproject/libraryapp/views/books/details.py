@@ -129,12 +129,15 @@ def book_details(request, book_id):
             "actual_method" in form_data
             and form_data["actual_method"] == "DELETE"
         ):
-            with sqlite3.connect(Connection.db_path) as conn:
-                db_cursor = conn.cursor()
+            book = Book.objects.get(pk=book_id)
+            book.delete()
 
-                db_cursor.execute("""
-                DELETE FROM libraryapp_book
-                WHERE id = ?
-                """, (book_id,))
+            # with sqlite3.connect(Connection.db_path) as conn:
+            #     db_cursor = conn.cursor()
+
+            #     db_cursor.execute("""
+            #     DELETE FROM libraryapp_book
+            #     WHERE id = ?
+            #     """, (book_id,))
 
             return redirect(reverse('libraryapp:books'))
