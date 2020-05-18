@@ -8,24 +8,25 @@ from ..connection import Connection
 @login_required
 def book_list(request):
     if request.method == 'GET':
-        with sqlite3.connect(Connection.db_path) as conn:
+        all_books = Book.objects.all()
+        # with sqlite3.connect(Connection.db_path) as conn:
 
-            conn.row_factory = model_factory(Book)
+        #     conn.row_factory = model_factory(Book)
 
-            db_cursor = conn.cursor()
-            db_cursor.execute("""
-            select
-                b.id,
-                b.title,
-                b.isbn,
-                b.author,
-                b.year_published,
-                b.librarian_id,
-                b.location_id
-            from libraryapp_book b
-            """)
+        #     db_cursor = conn.cursor()
+        #     db_cursor.execute("""
+        #     select
+        #         b.id,
+        #         b.title,
+        #         b.isbn,
+        #         b.author,
+        #         b.year_published,
+        #         b.librarian_id,
+        #         b.location_id
+        #     from libraryapp_book b
+        #     """)
 
-            all_books = db_cursor.fetchall()
+        #     all_books = db_cursor.fetchall()
 
         template = 'books/list.html'
         context = {
@@ -40,13 +41,6 @@ def book_list(request):
         with sqlite3.connect(Connection.db_path) as conn:
             db_cursor = conn.cursor()
 
-            # The values (?,?,?,?) are connecting to the form_data[]
-            # values from the form template inputs. Each string in
-            # form_data[] brackets are the 'name' attr of the inputs
-
-            # We do it this way for added security to prevent against
-            # SQL injection attacks where hackers could insert false
-            # data into the POST request.
             db_cursor.execute("""
             INSERT INTO libraryapp_book
             (
