@@ -9,62 +9,68 @@ from ..connection import Connection
 # Getting book from db *WHERE* the id of the book 
 # is = to the book_id in the url path.
 def get_book(book_id):
-    with sqlite3.connect(Connection.db_path) as conn:
-        conn.row_factory = create_book
-        db_cursor = conn.cursor()
+    book = Book.objects.get(pk=book_id)
+    book.librarian = Librarian.objects.get(pk=book.librarian_id)
+    book.location = Library.objects.get(pk=book.location_id)
 
-        db_cursor.execute("""
-        SELECT
-            b.id book_id,
-            b.title,
-            b.isbn,
-            b.author,
-            b.year_published,
-            b.librarian_id,
-            b.location_id,
-            li.id librarian_id,
-            u.first_name,
-            u.last_name,
-            loc.id library_id,
-            loc.name library_name
-        FROM libraryapp_book b
-        JOIN libraryapp_librarian li ON b.librarian_id = li.id
-        JOIN libraryapp_library loc ON b.location_id = loc.id
-        JOIN auth_user u ON u.id = li.user_id
-        WHERE b.id = ?
-        """, (book_id,))
+    return book
 
-        return db_cursor.fetchone()
+    # with sqlite3.connect(Connection.db_path) as conn:
+    #     conn.row_factory = create_book
+    #     db_cursor = conn.cursor()
+
+    #     db_cursor.execute("""
+    #     SELECT
+    #         b.id book_id,
+    #         b.title,
+    #         b.isbn,
+    #         b.author,
+    #         b.year_published,
+    #         b.librarian_id,
+    #         b.location_id,
+    #         li.id librarian_id,
+    #         u.first_name,
+    #         u.last_name,
+    #         loc.id library_id,
+    #         loc.name library_name
+    #     FROM libraryapp_book b
+    #     JOIN libraryapp_librarian li ON b.librarian_id = li.id
+    #     JOIN libraryapp_library loc ON b.location_id = loc.id
+    #     JOIN auth_user u ON u.id = li.user_id
+    #     WHERE b.id = ?
+    #     """, (book_id,))
+
+    #     return db_cursor.fetchone()
 
 # Adding a new row factory func. Looks like we're getting the book
 # details like normal, but now also getting details for the book's FKs
-def create_book(cursor, row):
-    _row = sqlite3.Row(cursor, row)
+# def create_book(cursor, row):
+#     _row = sqlite3.Row(cursor, row)
 
-    book = Book()
-    book.id = _row["book_id"]
-    book.title = _row["title"]
-    book.isbn = _row["isbn"]
-    book.author = _row["author"]
-    book.year_published = _row["year_published"]
+#     book = Book()
+#     book.id = _row["book_id"]
+#     book.title = _row["title"]
+#     book.isbn = _row["isbn"]
+#     book.author = _row["author"]
+#     book.year_published = _row["year_published"]
 
-    # The bracket notation is how we access data from specific cols
-    librarian = Librarian()
-    librarian.id = _row["librarian_id"]
-    librarian.first_name = _row["first_name"]
-    librarian.last_name = _row["last_name"]
+#     # The bracket notation is how we access data from specific cols
+#     librarian = Librarian()
+#     librarian.id = _row["librarian_id"]
+#     librarian.first_name = _row["first_name"]
+#     librarian.last_name = _row["last_name"]
 
-    library = Library()
-    library.id = _row["library_id"]
-    library.name = _row["library_name"]
+#     library = Library()
+#     library.id = _row["library_id"]
+#     library.name = _row["library_name"]
 
-    book.librarian = librarian
-    book.location = library
+#     book.librarian = librarian
+#     book.location = library
 
-    # returning a new book obj for each row/book in the DB, but now
-    # for the FKs on the book obj we have nested objs w/ data for the
-    # FKs.
-    return book
+#     # returning a new book obj for each row/book in the DB, but now
+#     # for the FKs on the book obj we have nested objs w/ data for the
+#     # FKs.
+#     return book
 
 # Invokes get_book function to get the matching book,
 # then renders the html template to display the book.

@@ -71,21 +71,21 @@ def library_list(request):
 
         return redirect(reverse('libraryapp:libraries'))
 
-def create_library(cursor, row):
-    _row = sqlite3.Row(cursor, row)
+# def create_library(cursor, row):
+#     _row = sqlite3.Row(cursor, row)
 
-    library = Library()
-    library.id = _row["library_id"]
-    library.name = _row["name"]
-    library.address = _row["address"]
+#     library = Library()
+#     library.id = _row["library_id"]
+#     library.name = _row["name"]
+#     library.address = _row["address"]
     
-    library.books = []
+#     library.books = []
 
-    book = Book()
-    book.id = _row["book_id"]
-    book.title = _row["title"]
-    book.author = _row["author"]
-    book.year_published = _row["year_published"]
-    book.isbn = _row["isbn"]
+#     book = Book()
+#     book.id = _row["book_id"]
+#     book.title = _row["title"]
+#     book.author = _row["author"]
+#     book.year_published = _row["year_published"]
+#     book.isbn = _row["isbn"]
 
-    return (library, book,)
+#     return (library, book,)

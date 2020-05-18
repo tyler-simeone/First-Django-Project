@@ -13,7 +13,7 @@
         each row and then for the FKs assigns a new obj with data
         for each FK. {% endcomment %}
         <div>Located in the {{ book.location.name }}</div>
-        <div>Registered by {{ book.librarian.first_name }} {{ book.librarian.last_name }}</div>
+        <div>Registered by {{ book.librarian.user.first_name }} {{ book.librarian.user.last_name }}</div>
     </section>
 
     <section id="book-actions" style="display:flex;">
