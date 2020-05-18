@@ -1,16 +1,22 @@
 {% extends 'shared/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'styles/books.css' %}" />
+{% endblock %}
 
 {% block content %}
     <h1>Books</h1>
 
     <a href="{% url 'libraryapp:book_form' %}">Add Book to Inventory</a>
 
-    <ol>
+    <ol class="books">
     {% for book in all_books %}
-        <li>
-            <a href="{% url 'libraryapp:book' book.id %}"> {{ book.title }} </a>
-            by {{book.author}}
-            published in {{book.year_published}}
+        <li class="book">
+            <a class="book__title" href="{% url 'libraryapp:book' book.id %}"> {{ book.title }} </a>
+            <div class="book__description">
+                by {{book.author}} published in {{book.year_published}}
+            </div>
         </li>
     {% endfor %}
     </ol>
